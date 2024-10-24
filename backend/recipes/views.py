@@ -4,10 +4,12 @@ from django.db.models import Prefetch
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from recipes.models import Recipe, Ingredients, Tags, RecipeIngredients
 from users.models import Profile
 from recipes.serializers import RecipesSerializer  # , CreateRecipeSerializer
+from recipes.permissions import IsAuthor
 
 
 class RecipesViewSet(viewsets.ModelViewSet):
@@ -22,6 +24,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
                                     .only('ingredient__measurement_unit', 'ingredient__name', 'ingredient__id', 'recipe__id', 'amount') ))
     pagination_class = PageNumberPagination
     serializer_class = RecipesSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, IsAuthor,)
 
     # def get_serializer_class(self):
     #     if self.action in ('create', 'update'):

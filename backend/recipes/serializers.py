@@ -54,22 +54,18 @@ class RecipesSerializer(serializers.ModelSerializer):
         # ingredients_serialazers = IngredientCreateResipeSerializer(data=ingredients, many=True)
         # ingredients_serialazers.is_valid(raise_exception=True)
         # ingredients_serialazers.save(recipe=recipe)
-        # print(ingredients)
         ingredients_list = []
         for ingredient_data in ingredients:
             ingredient = ingredient_data['ingredient']['id']
             amount = ingredient_data['amount']
-            #print(ingredient.id)
             recipe_ingredient = RecipeIngredients(ingredient=ingredient, recipe=recipe, amount=amount)
             ingredients_list.append(recipe_ingredient)
         RecipeIngredients.objects.bulk_create(ingredients_list)
         recipe.tags.add(*tags)
-        # print(tags)
 
         return recipe
     
     def update(self, value, validated_data):
-        # user = self.context['request'].user
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         value.ingredients.clear()
@@ -81,7 +77,6 @@ class RecipesSerializer(serializers.ModelSerializer):
         for ingredient_data in ingredients:
             ingredient = ingredient_data['ingredient']['id']
             amount = ingredient_data['amount']
-            #print(ingredient.id)
             recipe_ingredient = RecipeIngredients(ingredient=ingredient, recipe=value, amount=amount)
             ingredients_list.append(recipe_ingredient)
         RecipeIngredients.objects.bulk_create(ingredients_list)

@@ -14,5 +14,6 @@ router.register(r'tags', TagsViewSet, basename='tags'),
 # router.register(r'users', ProfileViewSet, basename='profile'),
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    # path('auth')
 ]
