@@ -7,6 +7,7 @@ from users.views import ProfileViewSet
 
 namespace = 'recipes'
 
+
 router = DefaultRouter()
 router.register(r'recipes', RecipesViewSet, basename='recipes'),
 router.register(r'ingredients', IngredientsViewSet, basename='ingredients'),

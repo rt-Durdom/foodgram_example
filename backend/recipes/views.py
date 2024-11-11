@@ -5,11 +5,16 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.exceptions import ValidationError
+from logging import getLogger
 
 from recipes.models import Recipe, Ingredients, Tags, RecipeIngredients
 from users.models import Profile
 from recipes.serializers import RecipesSerializer  # , CreateRecipeSerializer
 from recipes.permissions import IsAuthor
+
+
+logger = getLogger('recipes')
 
 
 class RecipesViewSet(viewsets.ModelViewSet):
@@ -22,7 +27,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
                           Prefetch('recipeingredients_set',
                                    RecipeIngredients.objects.select_related('ingredient')\
                                     .only('ingredient__measurement_unit', 'ingredient__name', 'ingredient__id', 'recipe__id', 'amount') ))
-    pagination_class = PageNumberPagination
+    pagination_class = None  # PageNumberPagination
     serializer_class = RecipesSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsAuthor,)
 
@@ -37,6 +42,21 @@ class RecipesViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
+    
+
+    def create(self, request):
+        self.perform_create
+        try:
+            responce = super().create(request)
+
+            id = responce.data['id']
+            logger.info(f'Пользователь {request.user.id} добавил рецепт {id}')
+            return responce
+        except ValidationError as error:
+            logger.error(f'Пользователь {request.user.id} пытался добавить рецепт данными {request.data}, произошла ошибка: {error}.')
+            raise error
+    
+
 
     # def create(self, request):
     #     input_serializer_class = self.get_serializer_class()

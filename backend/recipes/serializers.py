@@ -37,7 +37,8 @@ class RecipesSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.context.get('action') not in permissions.SAFE_METHODS:
+        # print(self.context.get('action'))
+        if self.context.get('request').method not in permissions.SAFE_METHODS:
             self.fields['ingredients'] = IngredientCreateResipeSerializer(many=True, write_only=True)
             self.fields['tags'] = serializers.PrimaryKeyRelatedField(write_only=True, many=True, queryset=Tags.objects.all())
     class Meta:

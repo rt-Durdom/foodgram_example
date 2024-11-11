@@ -30,9 +30,9 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": lambda request: True,
-}
+# DEBUG_TOOLBAR_CONFIG = {
+#     "SHOW_TOOLBAR_CALLBACK": lambda request: True,
+# }
 
 AUTH_USER_MODEL = 'users.Profile'
 
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_extensions',
     'drf_spectacular',
     'debug_toolbar',
     'djoser',
@@ -162,21 +163,44 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers':
-      {'db_handler':
-       {'level': 'DEBUG',
-        'class': 'logging.FileHandler',
-        'filename': 'logs/db.log'}
-       },
-    'loggers': 
-      {
-        'django.db.backends': {
-            'handlers': ['db_handler'],
-            'level': 'DEBUG',
-            'propagate': True,
-        }
-      }
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'formatters': {
+#         'dated': {
+#             'format': '{asctime} {levelname}: {msg}',
+#             'style': '{'
+#         }
+#     },
+#     'handlers':
+#       {'db_handler':
+#             {'level': 'DEBUG',
+#              'class': 'logging.FileHandler',
+#              'filename': 'logs/db.log'},
+#        'recipe_handler': {
+#             'level': 'INFO',
+#             'class': 'logging.FileHandler',
+#             'filename': 'logs/recipe.log',
+#             'formatter': 'dated'
+#             },
+#         'recipe_terminal_handler': {
+#             'level': 'WARNING',
+#             'class': 'logging.StreamHandler'
+#             }
+#        },
+       
+#     'loggers': 
+#       {
+#         'django.db.backends': {
+#             'handlers': ['db_handler'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#         'recipes': {
+#             'handlers': ['recipe_handler','recipe_terminal_handler'],
+#             'level': 'INFO',
+#             'propagate': True,
+#         }
+
+#       }
+# }
