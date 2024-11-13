@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from django.db.models import Prefetch
-from rest_framework.pagination import PageNumberPagination
+#from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -10,8 +10,9 @@ from logging import getLogger
 
 from recipes.models import Recipe, Ingredients, Tags, RecipeIngredients
 from users.models import Profile
-from recipes.serializers import RecipesSerializer  # , CreateRecipeSerializer
+from recipes.serializers import RecipesSerializer, IngredientSerializer, TagSerializer  # , CreateRecipeSerializer
 from recipes.permissions import IsAuthor
+from recipes.pagination import RecipePagination
 
 
 logger = getLogger('recipes')
@@ -27,7 +28,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
                           Prefetch('recipeingredients_set',
                                    RecipeIngredients.objects.select_related('ingredient')\
                                     .only('ingredient__measurement_unit', 'ingredient__name', 'ingredient__id', 'recipe__id', 'amount') ))
-    pagination_class = None  # PageNumberPagination
+    pagination_class = RecipePagination
     serializer_class = RecipesSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsAuthor,)
 
@@ -81,8 +82,10 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
 class IngredientsViewSet(viewsets.ModelViewSet):
     queryset = Ingredients.objects.all()
+    serializer_class = IngredientSerializer
 
 
 class TagsViewSet(viewsets.ModelViewSet):
     queryset = Tags.objects.all()
+    serializer_class = TagSerializer
 

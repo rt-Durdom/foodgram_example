@@ -13,13 +13,22 @@ class TagSerializer(serializers.ModelSerializer):
     
 
 class IngredientSerializer(serializers.ModelSerializer):
+    # id = serializers.IntegerField(source='ingredient.id', read_only=True)
+    # name = serializers.CharField(source='ingredient.name', read_only=True)
+    # measurement_unit = serializers.CharField(source='ingredient.measurement_unit', read_only=True)
+    
+    class Meta:
+        model = Ingredients
+        fields = ('id', 'name', 'measurement_unit') 
+
+class RecipeIngredientSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='ingredient.id', read_only=True)
     name = serializers.CharField(source='ingredient.name', read_only=True)
     measurement_unit = serializers.CharField(source='ingredient.measurement_unit', read_only=True)
     
     class Meta:
         model = RecipeIngredients
-        fields = ('id', 'name', 'measurement_unit', 'amount')
+        fields = ('id', 'name', 'measurement_unit', 'amount',)
 
 class IngredientCreateResipeSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(source='ingredient.id', queryset=Ingredients.objects.all())
@@ -31,7 +40,7 @@ class IngredientCreateResipeSerializer(serializers.ModelSerializer):
 class RecipesSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
     author = ProfileSerializer(read_only=True)
-    ingredients = IngredientSerializer(many=True, source='recipeingredients_set')
+    ingredients = RecipeIngredientSerializer(many=True, source='recipeingredients_set')
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
 
